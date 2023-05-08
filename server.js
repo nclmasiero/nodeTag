@@ -10,10 +10,12 @@ const server = app.listen(3000, () => {
 const io = require("socket.io")(server);
 
 // requires
-const Player = require("./base/Player.js");
+const Player = require("./base/player.js");
+const collision = require("./base/collision.js");
 
 // ### CODE ### //
 var players = [];
+var everTagged = false;
 
 setInterval(() => {
     for(let i = players.length - 1; i >= 0; i--) {
@@ -21,7 +23,14 @@ setInterval(() => {
             players.splice(i, 1);
             continue;
         }
+        // generic update
         players[i].update();
+        // collisions update
+        for(let j = i - 1; j >= 0; j--) {
+            if(collision.isOverlapping(players[i], players[j])) {
+                players[i].collideWith(players[j]);
+            }
+        }
     }
 }, 16);
 
@@ -31,7 +40,8 @@ io.on("connection", (socket) => {
 
     socket.on("requestId", (username) => {
         let id = socket.id;
-        players.push(new Player(id, username, 300, 300));
+        players.push(new Player(id, username, !everTagged, 300, 300));
+        if(!everTagged) everTagged = true;
         socket.emit("id", id);
     });
 

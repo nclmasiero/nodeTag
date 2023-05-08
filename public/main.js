@@ -18,7 +18,7 @@ function setup() {
 }
 
 function draw() {
-    background(51);
+    background(200);
 
     socket.emit("requestUpdate");
     for(let player of players) {
@@ -61,16 +61,20 @@ function keyPressed() {
 
 // ### FUNCTIONS ### //
 function renderPlayer(player) {
-    stroke(200);
+    stroke(51);
     strokeWeight(2);
-    fill(51);
-    circle(player.position.x, player.position.y, player.radius*2);
-
-    noStroke();
-    fill(200);
+    fill(100);
+    if(player.isTagged) fill(200, 50, 50);
     textAlign(CENTER, CENTER);
     textSize(player.radius);
     text(player.username, player.position.x, player.position.y - player.radius*2);
+    
+    if(!player.doRender) return;
+    stroke(51);
+    strokeWeight(2);
+    fill(51);
+    if(player.isTagged) fill(200, 50, 50);
+    circle(player.position.x, player.position.y, player.radius*2);
 }
 
 function getInput() {
