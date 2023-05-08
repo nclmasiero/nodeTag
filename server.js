@@ -7,7 +7,7 @@ const server = app.listen(3000, () => {
 });
 
 // socket setup
-const io = require("socket.io")();
+const io = require("socket.io")(server);
 
 io.on("connection", (socket) => {
     console.log("new connection: " + socket.id);
