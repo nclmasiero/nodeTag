@@ -1,4 +1,4 @@
-const socket = io("nclgames.it:80");
+const socket = io("16.16.193.226:80");
 
 var players = [];
 var id = null;
