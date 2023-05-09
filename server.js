@@ -60,7 +60,10 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         console.log("[DISCONNECT] " + socket.id);
         let player = getPlayerById(socket.id);
-        if(player != null) player.toErase = true;
+        if(player != null) {
+            player.toErase = true;
+            if(player.isTagged) everTagged = false;
+        }
     })
 });
 
