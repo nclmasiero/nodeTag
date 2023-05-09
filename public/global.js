@@ -1,6 +1,6 @@
 const debug = true;
 
-var ipAddress = "nclgames.it";
+var ipAddress = "16.16.193.226";
 var port = "80";
 
 if(debug) {
