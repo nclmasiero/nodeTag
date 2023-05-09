@@ -42,6 +42,10 @@ setInterval(() => {
     }
 }, 16);
 
+setInterval(() => {
+    orderArray();
+}, 60);
+
 // events
 io.on("connection", (socket) => {
     console.log("[CONNECT] " + socket.id);
@@ -80,6 +84,21 @@ io.on("connection", (socket) => {
 });
 
 // ### FUNCTIONS ### //
+
+function orderArray() {
+    let changed = true;
+    while(changed) {
+        changed = false;
+        for(let i = 0; i < players.length - 1; i++) {
+            if(players[i].score < players[i + 1].score) {
+                let temp = players[i];
+                players[i] = players[i + 1];
+                players[i + 1] = temp;
+                changed = true;
+            }
+        }
+    }
+}
 
 function spawnPlayer(id, username) {
     players.push(new Player(id, username, !everTagged, 300, 300, boundaries));

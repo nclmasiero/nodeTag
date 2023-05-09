@@ -34,6 +34,7 @@ function draw() {
     // UPDATE
     socket.emit("requestUpdate");
     updateCamera();
+    renderScoreboard();
 
     // RENDER
     push();
@@ -101,6 +102,23 @@ function keyPressed() {
     }
 }
 
+function renderScoreboard() {
+    noStroke();
+    textAlign(RIGHT);
+    let size = map(width, 720, 1920, 20, 30);
+    textSize(size);
+    
+    fill(51);
+    text("LEADERBOARD:", width - size, size * 1.5);
+    let rowHeight = size * 1.1;
+    for(let i = 0; i < players.length; i++) {
+        let player = players[i];
+        fill(51);
+        if(player.id == id) fill(50, 180, 50);
+        text(player.username + "\t" + Math.round(player.score), width - size, size * 1.5 + i * rowHeight + rowHeight);
+    }
+}
+
 function renderBoudaries() {
     noFill();
     stroke(51);
@@ -112,14 +130,17 @@ function renderBoudaries() {
 }
 
 function renderPlayer(player) {
-    stroke(51);
-    strokeWeight(2);
-    fill(100);
-    if(player.isTagged) fill(200, 50, 50);
-    textAlign(CENTER, CENTER);
-    textSize(player.radius);
-    text(player.username, player.position.x, player.position.y - player.radius*2);
+    if(player.id != id) { // render username
+        stroke(51);
+        strokeWeight(2);
+        fill(100);
+        if(player.isTagged) fill(200, 50, 50);
+        textAlign(CENTER, CENTER);
+        textSize(player.radius);
+        text(player.username, player.position.x, player.position.y - player.radius*2);
+    }
     
+    // render player
     if(!player.doRender) return;
     stroke(51);
     strokeWeight(2);

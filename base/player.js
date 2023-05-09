@@ -23,6 +23,8 @@ class Player {
         this.blinkFrequency = 10;
         this.doRender = true;
 
+        this.score = 0;
+
     }
 
     update() {
@@ -32,9 +34,17 @@ class Player {
         this.updateBoundaries();
 
         this.updateBlinkTime();
+        this.updateScore();
     }
 
     // ### FUNCTIONS ### //
+
+    updateScore() {
+        if(this.isTagged) this.score -= 0.01;
+        else this.score += 0.01;
+
+        if(this.score < 0) this.score = 0;
+    }
 
     applySpeed() {
         this.position.x += this.speed.x;
@@ -63,6 +73,8 @@ class Player {
         byWho.isTagged = false;
 
         byWho.blink();
+        byWho.score += 10;
+        this.score -= 5;
     }
 
     collideWith(other) {
