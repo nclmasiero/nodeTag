@@ -1,8 +1,18 @@
-const socket = io("16.16.193.226:80");
+const socket = io(ipAddress + ":" + port);
 
 var players = [];
 var id = null;
 var username = "";
+var boundaries;
+var mainCamera = {
+    x: 0,
+    y: 0
+};
+console.log(mainCamera);
+
+socket.on("boundaries", (_boundaries) => {
+    boundaries = _boundaries;
+});
 
 socket.on("id", (_id) => {
     id = _id;
@@ -15,19 +25,33 @@ socket.on("update", (_players) => {
 function setup() {
     createCanvas(windowWidth, windowHeight);
 
+    socket.emit("requestBoudaries");
 }
 
 function draw() {
     background(200);
 
+    // UPDATE
     socket.emit("requestUpdate");
+    updateCamera();
+
+    // RENDER
+    push();
+
+    translate(width/2 - mainCamera.x, height/2 - mainCamera.y);
+
     for(let player of players) {
         renderPlayer(player);
     }
+
+    if(boundaries) renderBoudaries();
     
     if(id != null) getInput();
     else {
         // insert name code
+        mainCamera.x = width/2;
+        mainCamera.y = height/2;
+
         noStroke();
         fill(0, 100);
         rect(0, 0, width, height);
@@ -39,10 +63,28 @@ function draw() {
         text("Type your Name:", width/2, height/4);
         text(username, width/2, height/2);
     }
+    pop();
 }
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
+}
+
+// ### FUNCTIONS ### //
+function getPlayerById(id) {
+    for(let player of players) {
+        if(player.id == id) return player;
+    }
+
+    return null;
+}
+
+function updateCamera() {
+    let player = getPlayerById(id);
+    if(!player) return;
+
+    mainCamera.x = player.position.x;
+    mainCamera.y = player.position.y;
 }
 
 function keyTyped() {
@@ -59,7 +101,16 @@ function keyPressed() {
     }
 }
 
-// ### FUNCTIONS ### //
+function renderBoudaries() {
+    noFill();
+    stroke(51);
+    strokeWeight(2);
+    line(0, 0, boundaries.width, 0);
+    line(0, 0, 0, boundaries.height);
+    line(boundaries.width, boundaries.height, boundaries.width, 0);
+    line(boundaries.width, boundaries.height, 0, boundaries.height);
+}
+
 function renderPlayer(player) {
     stroke(51);
     strokeWeight(2);

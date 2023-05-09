@@ -1,9 +1,13 @@
+const global = require("./public/global.js");
+
 // express setup
 const express = require("express");
 const app = express();
 app.use(express.static("public"));
-const server = app.listen(80, () => {
-    console.log("server listening at port 80");
+const server = app.listen(global.port, () => {
+    console.log("server started.");
+    console.log("ipAddress: " + global.ipAddress);
+    console.log("port: " + global.port);
 });
 
 // socket setup
@@ -16,6 +20,10 @@ const collision = require("./base/collision.js");
 // ### CODE ### //
 var players = [];
 var everTagged = false;
+var boundaries = {
+    width: 1600,
+    height: 1200
+};
 
 setInterval(() => {
     for(let i = players.length - 1; i >= 0; i--) {
@@ -38,9 +46,13 @@ setInterval(() => {
 io.on("connection", (socket) => {
     console.log("[CONNECT] " + socket.id);
 
+    socket.on("requestBoudaries", () => {
+        socket.emit("boundaries", boundaries);
+    });
+
     socket.on("requestId", (username) => {
         let id = socket.id;
-        players.push(new Player(id, username, !everTagged, 300, 300));
+        spawnPlayer(id, username);
         if(!everTagged) everTagged = true;
         socket.emit("id", id);
     });
@@ -68,6 +80,10 @@ io.on("connection", (socket) => {
 });
 
 // ### FUNCTIONS ### //
+
+function spawnPlayer(id, username) {
+    players.push(new Player(id, username, !everTagged, 300, 300, boundaries));
+}
 
 function getPlayerById(id) {
     for(let player of players) {

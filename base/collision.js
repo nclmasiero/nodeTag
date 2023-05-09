@@ -1,5 +1,4 @@
 function isOverlapping(p1, p2) {
-    console.log(getDistance(p1, p2));
     return getDistance(p1, p2) <= p1.radius + p2.radius;
 }
 

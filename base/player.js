@@ -1,5 +1,5 @@
 class Player {
-    constructor(id, username, isTagged, x, y) {
+    constructor(id, username, isTagged, x, y, boundaries) {
         this.id = id;
         this.username = username;
 
@@ -11,7 +11,8 @@ class Player {
             x: 0,
             y: 0
         };
-
+        
+        this.boundaries = boundaries;
         this.radius = 30;
         this.step = 2;
         this.maxSpeed = 6;
@@ -21,12 +22,14 @@ class Player {
         this.blinkTime = 0;
         this.blinkFrequency = 10;
         this.doRender = true;
+
     }
 
     update() {
         this.applySpeed();
         this.applyFriction();
         this.capSpeed();
+        this.updateBoundaries();
 
         this.updateBlinkTime();
     }
@@ -80,6 +83,13 @@ class Player {
 
         this.blinkTime--;
         if(this.blinkTime % this.blinkFrequency == 0) this.doRender = !this.doRender;
+    }
+
+    updateBoundaries() {
+        if(this.position.x > this.boundaries.width - this.radius) this.position.x = this.boundaries.width - this.radius;
+        if(this.position.y > this.boundaries.height - this.radius) this.position.y = this.boundaries.height - this.radius;
+        if(this.position.x < this.radius) this.position.x = this.radius;
+        if(this.position.y < this.radius) this.position.y = this.radius;
     }
 }
 
