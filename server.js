@@ -7,7 +7,11 @@ const server = app.listen(3000, () => {
 });
 
 // socket setup
-const io = require("socket.io")(server);
+const io = require("socket.io")(server, {
+    cors: {
+    origin: '*',
+    }
+});
 
 // requires
 const Player = require("./base/player.js");
