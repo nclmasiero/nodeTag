@@ -2,8 +2,8 @@
 const express = require("express");
 const app = express();
 app.use(express.static("public"));
-const server = app.listen(3000, () => {
-    console.log("server listening at port 3000");
+const server = app.listen(80, () => {
+    console.log("server listening at port 80");
 });
 
 // socket setup
